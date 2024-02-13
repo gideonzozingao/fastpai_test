@@ -33,6 +33,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 async def read_reports():
     return [{"report": "This is a report 1"}, {"report": "This is a report 2"}]
 
-@router.get("/genset_refueling")
+@router.post("/genset_refueling")
 async def read_refuelingreport(report:RefuelingReport):
     return {"report": report}
