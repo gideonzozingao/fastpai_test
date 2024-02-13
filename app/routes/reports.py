@@ -11,9 +11,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-
 Base = declarative_base()
-
 class RefuelingReport(BaseModel):
     date: str
     site_id:str
@@ -35,6 +33,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 async def read_reports():
     return [{"report": "This is a report 1"}, {"report": "This is a report 2"}]
 
-@router.get("/refuelingreport", tags=["reports"])
+@router.get("/genset_refueling", tags=["reports"])
 async def read_refuelingreport():
     return [{"report": "This is a report 1"}, {"report": "This is a report 2"}]
