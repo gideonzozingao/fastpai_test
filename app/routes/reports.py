@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from ..dependencies.dependencies import get_token_header
+from datetime import date,datetime
 router = APIRouter(
     prefix="/reports",
     tags=["reports"],
@@ -13,7 +14,7 @@ router = APIRouter(
 
 Base = declarative_base()
 class RefuelingReport(BaseModel):
-    date: str
+    date: date
     site_id:str
     site_name:str
     fuel_level_before:str
@@ -22,7 +23,7 @@ class RefuelingReport(BaseModel):
     running_hours:str
 
 class SupplyPickupReport(BaseModel):
-    date: str
+    date: date
     pickup_location:str
     contractor_name:str
     vehicle_rego:str
@@ -31,8 +32,6 @@ class SupplyPickupReport(BaseModel):
     oil_qty:float
     coolant_qty:float
     comment:str
-    
-    
     
 SQLALCHEMY_DATABASE_URL = (
     "mysql+mysqlconnector://gideonzozingao:password123@localhost/mno"
