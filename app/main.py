@@ -5,6 +5,7 @@ from .dependencies.dependencies import get_query_token, get_token_header
 app = FastAPI()
 
 app.include_router(users.router)
+app.include_router(reports.router)
 
 @app.get("/")
 async def root():
