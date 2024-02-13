@@ -1,22 +1,12 @@
 from typing import Annotated, List
-
+from PIL import Image
+import io
 from fastapi import (
-    FastAPI,
     File,
-    HTTPException,
-    Body,
-    Cookie,
     File,
-    Form,
-    Header,
-    Path,
-    Query,
-    status,
     File,
     UploadFile,
     APIRouter,
-    Depends,
-    Request,
 )
 
 
@@ -24,13 +14,13 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
 from ..dependencies.dependencies import get_token_header
 from datetime import date, datetime
 
 router = APIRouter(
     prefix="/reports",
     tags=["reports"],
-    # dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
 
@@ -41,10 +31,10 @@ class RefuelingReport(BaseModel):
     date: str
     site_id: str
     site_name: str
-    fuel_level_before: str
-    fuel_level_after: str
+    fuel_level_before: float
+    fuel_level_after: float
     comment: str
-    running_hours: str
+    running_hours: int
 
 
 class SupplyPickupReport(BaseModel):
@@ -57,6 +47,11 @@ class SupplyPickupReport(BaseModel):
     oil_qty: int
     coolant_qty: int
     comment: str
+
+
+class FileData(BaseModel):
+    filename: str
+    contents: bytes
 
 
 SQLALCHEMY_DATABASE_URL = (
@@ -74,14 +69,24 @@ async def read_reports():
 
 
 @router.post("/genset_refueling")
-async def read_refuelingreport(
-    report: RefuelingReport, files: List[UploadFile] = File(...)
-):
-    return {"report": report, "file_size": len(files)}
+async def gen_refueling(report: RefuelingReport, file: Annotated[bytes, File()]):
+    return {"report": report.dict(), "file": len(file)}
 
 
 @router.post("/supply_pickup")
-async def read_refuelingreport(
-    report1: SupplyPickupReport, files: List[UploadFile] = File(...)
+async def read_supply_pickup_report(
+    report1: SupplyPickupReport, files: List[bytes] = File(...)
 ):
-    return {"report": report1, "file_size": len(files)}
+    # Access the submitted report data
+    report_data = report1.dict()
+
+    # Access individual fields of the report
+    date = report_data["date"]
+    pickup_location = report_data["pickup_location"]
+    # etc.
+
+    # Access the uploaded files
+    file_names = [file.filename for file in files]
+    file_sizes = [file.file._size for file in files]
+
+    return {"report": report_data, "file_names": file_names, "file_sizes": file_sizes}
