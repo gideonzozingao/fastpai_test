@@ -56,7 +56,7 @@ async def read_users():
 
 @router.post("/authenticate")
 async def authenticate_user(user:UserAuth):
-    return {"username": "fakecurrentuser"}
+    return user.dict()
 
 @router.get("/users/{username}", tags=["users"])
 async def read_user(username: str):

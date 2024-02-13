@@ -20,6 +20,19 @@ class RefuelingReport(BaseModel):
     fuel_level_after:str
     comment: str
     running_hours:str
+
+class SupplyPickupReport(BaseModel):
+    date: str
+    pickup_location:str
+    contractor_name:str
+    vehicle_rego:str
+    number_of_drum:int
+    sites: str
+    oil_qty:float
+    coolant_qty:float
+    comment:str
+    
+    
     
 SQLALCHEMY_DATABASE_URL = (
     "mysql+mysqlconnector://gideonzozingao:password123@localhost/mno"
@@ -35,4 +48,7 @@ async def read_reports():
 
 @router.post("/genset_refueling")
 async def read_refuelingreport(report:RefuelingReport):
+    return {"report": report}
+@router.post("/supply_pickup")
+async def read_refuelingreport(report:SupplyPickupReport):
     return {"report": report}
