@@ -1,4 +1,5 @@
 from typing import Annotated, List
+
 from fastapi import (
     FastAPI,
     File,
@@ -18,6 +19,7 @@ from fastapi import (
     Request,
 )
 
+
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -36,7 +38,7 @@ Base = declarative_base()
 
 
 class RefuelingReport(BaseModel):
-    date: date
+    date: str
     site_id: str
     site_name: str
     fuel_level_before: str
@@ -46,14 +48,14 @@ class RefuelingReport(BaseModel):
 
 
 class SupplyPickupReport(BaseModel):
-    date: date
+    date: str
     pickup_location: str
     contractor_name: str
     vehicle_rego: str
     number_of_drum: int
     sites: str
-    oil_qty: float
-    coolant_qty: float
+    oil_qty: int
+    coolant_qty: int
     comment: str
 
 
