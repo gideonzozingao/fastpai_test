@@ -50,5 +50,5 @@ async def read_reports():
 async def read_refuelingreport(report:RefuelingReport):
     return {"report": report}
 @router.post("/supply_pickup")
-async def read_refuelingreport(report:SupplyPickupReport):
-    return {"report": report}
+async def read_refuelingreport(report1:SupplyPickupReport):
+    return {"report": report1}
