@@ -74,13 +74,15 @@ async def read_reports():
 @router.post("/genset_refueling")
 async def gen_refueling(
     # file: Annotated[bytes, File(...)],
-    date: Annotated[date, Form(...)],
-    site_id: Annotated[str, Form(...)],
-    site_name: Annotated[str, Form(...)],
-    fuel_level_before: Annotated[float, Form(...)],
-    fuel_level_after: Annotated[float, Form(...)],
-    comment: Annotated[str, Form(...)],
-    running_hours: Annotated[float, Form(...)],
+    # request: Request,
+    # date: Annotated[date, Form(...)],
+    # site_id: Annotated[str, Form(...)],
+    # site_name: Annotated[str, Form(...)],
+    # fuel_level_before: Annotated[float, Form(...)],
+    # fuel_level_after: Annotated[float, Form(...)],
+    # comment: Annotated[str, Form(...)],
+    # running_hours: Annotated[float, Form(...)],
+    report: RefuelingReport,
     files: list[UploadFile] = File(...),
 ):
     # file_content = await file.read()
@@ -102,19 +104,13 @@ async def gen_refueling(
                 "content": await file.read(),
             }
         )
-
-    form_data = {
-        "date": date,
-        "site_id": site_id,
-        "site_name": site_name,
-        "fuel_level_before": fuel_level_before,
-        "fuel_level_after": fuel_level_after,
-        "comment": comment,
-        "running_hours": running_hours,
-    }
+    # request_body = await request.body()
+    form_data = report
+    # print(request_body.decode())
     return {
         # "file_content": file_contents,
         "form_data": form_data,
+        # "request_body": request_body.decode(),
     }
 
 
