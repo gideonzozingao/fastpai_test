@@ -82,7 +82,7 @@ async def gen_refueling(
     fuel_level_after: Annotated[float, Form(...)],
     comment: Annotated[str, Form(...)],
     running_hours: Annotated[float, Form(...)],
-    files: list[UploadFile] = File(...),
+    capturedImages: list[UploadFile] = File(...),
 ):
     # file_content = await file.read()
     if not os.path.exists(UPLOAD_DIRECTORY):
@@ -90,7 +90,7 @@ async def gen_refueling(
     file_contents = []
     file_paths = []
     saved_files = []
-    for file in files:
+    for file in capturedImages:
         file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
         with open(file_path, "wb") as buffer:
             buffer.write(await file.read())
