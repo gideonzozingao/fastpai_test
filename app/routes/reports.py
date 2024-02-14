@@ -1,13 +1,16 @@
 from typing import Annotated, List
 from PIL import Image
 import io
+import os
+import shutil
+
 from fastapi import (
     File,
+    Form,
     Request,
     UploadFile,
     APIRouter,
 )
-
 
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
@@ -60,6 +63,7 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+UPLOAD_DIRECTORY = "uploads"
 
 
 @router.get("/", tags=["reports"])
@@ -68,8 +72,50 @@ async def read_reports():
 
 
 @router.post("/genset_refueling")
-async def gen_refueling(files: UploadFile = File(...)):
-    return {"file": files.__dict__}
+async def gen_refueling(
+    # file: Annotated[bytes, File(...)],
+    date: Annotated[date, Form(...)],
+    site_id: Annotated[str, Form(...)],
+    site_name: Annotated[str, Form(...)],
+    fuel_level_before: Annotated[float, Form(...)],
+    fuel_level_after: Annotated[float, Form(...)],
+    comment: Annotated[str, Form(...)],
+    running_hours: Annotated[float, Form(...)],
+    files: list[UploadFile] = File(...),
+):
+    # file_content = await file.read()
+    if not os.path.exists(UPLOAD_DIRECTORY):
+        os.makedirs(UPLOAD_DIRECTORY)
+    file_contents = []
+    file_paths = []
+    saved_files = []
+    for file in files:
+        file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
+        with open(file_path, "wb") as buffer:
+            buffer.write(await file.read())
+        saved_files.append(file_path)
+
+        file_contents.append(
+            {
+                "filename": file.filename,
+                "content_type": file.content_type,
+                "content": await file.read(),
+            }
+        )
+
+    form_data = {
+        "date": date,
+        "site_id": site_id,
+        "site_name": site_name,
+        "fuel_level_before": fuel_level_before,
+        "fuel_level_after": fuel_level_after,
+        "comment": comment,
+        "running_hours": running_hours,
+    }
+    return {
+        # "file_content": file_contents,
+        "form_data": form_data,
+    }
 
 
 @router.post("/supply_pickup")
