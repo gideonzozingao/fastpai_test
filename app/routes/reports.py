@@ -3,8 +3,7 @@ from PIL import Image
 import io
 from fastapi import (
     File,
-    File,
-    File,
+    Request,
     UploadFile,
     APIRouter,
 )
@@ -69,8 +68,8 @@ async def read_reports():
 
 
 @router.post("/genset_refueling")
-async def gen_refueling(report: RefuelingReport, file: Annotated[bytes, File()]):
-    return {"report": report.dict(), "file": len(file)}
+async def gen_refueling(files: UploadFile = File(...)):
+    return {"file": files.__dict__}
 
 
 @router.post("/supply_pickup")
