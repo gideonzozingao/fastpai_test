@@ -4,13 +4,30 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from ..dependencies.dependencies import get_token_header
+from fastapi.middleware.cors import CORSMiddleware
 router = APIRouter(
     prefix="/users",
     tags=["users"],
     # dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
+origins = [
+    "http://localhost",
+    "http://localhost:19006",
+    "http://localhost:3000",
+]
 
+# Create FastAPI app
+app = FastAPI()
+
+# Add CORS middleware to the app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
+)
 Base = declarative_base()
 
 
