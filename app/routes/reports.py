@@ -91,7 +91,7 @@ async def gen_refueling(
     fuel_level_after: Annotated[float, Form(...)],
     comment: Annotated[str, Form(...)],
     running_hours: Annotated[float, Form(...)],
-    images: list[UploadFile] = File(...),
+    images: List[UploadFile] = File(...),
 ):
     # file_content = await file.read()
     if not os.path.exists(UPLOAD_DIRECTORY):
