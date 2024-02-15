@@ -53,7 +53,6 @@ class RefuelingReport(BaseModel):
     comment: str
     running_hours: int
 
-
 class SupplyPickupReport(BaseModel):
     date: str
     pickup_location: str
