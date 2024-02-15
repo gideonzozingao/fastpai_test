@@ -146,7 +146,7 @@ async def read_supply_pickup_report(
 
 
 @router.post("/site_outage_report")
-async def site_outage_report(data: dict,capturedImages:List[UploadFile] = File(...)):
+async def site_outage_report(data: dict):
     date = data.get("date")
     site_id = data.get("site_id")
     site_name = data.get("site_name")
@@ -155,14 +155,14 @@ async def site_outage_report(data: dict,capturedImages:List[UploadFile] = File(.
     rectification = data.get("rectification")
     comments = data.get("comments")
     capturedImages = data.get("capturedImages", [])
-
+    print(capturedImages)
     # Handle capturedImages as needed
-    saved_files = []
-    for image in capturedImages:
-        file_path = os.path.join(UPLOAD_DIRECTORY, image.filename)
-        with open(file_path, "wb") as buffer:
-            buffer.write(await image.read())
-        saved_files.append(file_path)
+    # saved_files = []
+    # for image in capturedImages:
+    #     file_path = os.path.join(UPLOAD_DIRECTORY, image.filename)
+    #     with open(file_path, "wb") as buffer:
+    #         buffer.write(await image.read())
+    #     saved_files.append(file_path)
 
     return {
         "date": date,
