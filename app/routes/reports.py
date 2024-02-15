@@ -82,8 +82,6 @@ async def read_reports():
 
 @router.post("/genset_refueling")
 async def gen_refueling(
-    # file: Annotated[bytes, File(...)],
-    # request: Request,
     date: Annotated[date, Form(...)],
     site_id: Annotated[str, Form(...)],
     site_name: Annotated[str, Form(...)],
@@ -97,7 +95,6 @@ async def gen_refueling(
     if not os.path.exists(UPLOAD_DIRECTORY):
         os.makedirs(UPLOAD_DIRECTORY)
     file_contents = []
-    file_paths = []
     saved_files = []
     for file in images:
         file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
