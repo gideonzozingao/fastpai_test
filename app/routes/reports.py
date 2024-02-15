@@ -155,14 +155,14 @@ async def site_outage_report(data: dict):
     rectification = data.get("rectification")
     comments = data.get("comments")
     capturedImages = data.get("capturedImages", [])
-    print(capturedImages)
+    # print(capturedImages)
     # Handle capturedImages as needed
-    # saved_files = []
-    # for image in capturedImages:
-    #     file_path = os.path.join(UPLOAD_DIRECTORY, image.filename)
-    #     with open(file_path, "wb") as buffer:
-    #         buffer.write(await image.read())
-    #     saved_files.append(file_path)
+    saved_files = []
+    for image in capturedImages:
+        file_path = os.path.join(UPLOAD_DIRECTORY, image.filename)
+        with open(file_path, "wb") as buffer:
+            buffer.write(await image.read())
+        saved_files.append(file_path)
 
     return {
         "date": date,
