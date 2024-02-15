@@ -3,7 +3,6 @@ from PIL import Image
 import io
 import os
 import shutil
-
 from fastapi import (
     File,
     Form,
@@ -16,7 +15,6 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 from ..dependencies.dependencies import get_token_header
 from datetime import date, datetime
 
@@ -25,7 +23,6 @@ router = APIRouter(
     tags=["reports"],
     responses={404: {"description": "Not found"}},
 )
-
 Base = declarative_base()
 
 
@@ -49,6 +46,16 @@ class SupplyPickupReport(BaseModel):
     oil_qty: int
     coolant_qty: int
     comment: str
+
+
+class SiteOutageReport(BaseModel):
+    date: str
+    site_id: str
+    site_name: str
+    outage_datetime: str
+    outage_cause: str
+    rectification: str
+    comments: str
 
 
 class FileData(BaseModel):
@@ -127,14 +134,37 @@ async def read_supply_pickup_report(
 ):
     # Access the submitted report data
     report_data = report1.dict()
-
     # Access individual fields of the report
     date = report_data["date"]
     pickup_location = report_data["pickup_location"]
     # etc.
-
     # Access the uploaded files
     file_names = [file.filename for file in files]
     file_sizes = [file.file._size for file in files]
 
     return {"report": report_data, "file_names": file_names, "file_sizes": file_sizes}
+
+
+@router.post("/site_outage_report")
+async def site_outage_report(data: dict):
+    date = data.get("date")
+    site_id = data.get("site_id")
+    site_name = data.get("site_name")
+    outage_datetime = data.get("outage_datetime")
+    outage_cause = data.get("outage_cause")
+    rectification = data.get("rectification")
+    comments = data.get("comments")
+    capturedImages = data.get("capturedImages", [])
+
+    # Handle capturedImages as needed
+
+    return {
+        "date": date,
+        "site_id": site_id,
+        "site_name": site_name,
+        "outage_datetime": outage_datetime,
+        "outage_cause": outage_cause,
+        "rectification": rectification,
+        "comments": comments,
+        "capturedImages": capturedImages,
+    }
