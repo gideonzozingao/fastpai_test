@@ -4,7 +4,7 @@ import io
 import os
 import shutil
 from fastapi import (
-     FastAPI,
+    FastAPI,
     File,
     Form,
     Request,
@@ -18,29 +18,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from ..dependencies.dependencies import get_token_header
 from datetime import date, datetime
-from fastapi.middleware.cors import CORSMiddleware
+
 router = APIRouter(
     prefix="/reports",
     tags=["reports"],
     responses={404: {"description": "Not found"}},
 )
-origins = [
-    "http://localhost",
-    "http://localhost:19006",
-    "http://localhost:3000",
-]
 
-# Create FastAPI app
-app = FastAPI()
-
-# Add CORS middleware to the app
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE","OPTION"],
-    allow_headers=["Authorization", "Content-Type"],
-)
 Base = declarative_base()
 
 
@@ -52,6 +36,7 @@ class RefuelingReport(BaseModel):
     fuel_level_after: float
     comment: str
     running_hours: int
+
 
 class SupplyPickupReport(BaseModel):
     date: str
@@ -106,7 +91,7 @@ async def gen_refueling(
     fuel_level_after: Annotated[float, Form(...)],
     comment: Annotated[str, Form(...)],
     running_hours: Annotated[float, Form(...)],
-    capturedImages: list[UploadFile] = File(...),
+    images: list[UploadFile] = File(...),
 ):
     # file_content = await file.read()
     if not os.path.exists(UPLOAD_DIRECTORY):
@@ -114,12 +99,11 @@ async def gen_refueling(
     file_contents = []
     file_paths = []
     saved_files = []
-    for file in capturedImages:
+    for file in images:
         file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
         with open(file_path, "wb") as buffer:
             buffer.write(await file.read())
         saved_files.append(file_path)
-
         file_contents.append(
             {
                 "filename": file.filename,
@@ -168,9 +152,9 @@ async def site_outage_report(
     site_id: Annotated[str, Form(...)],
     site_name: Annotated[str, Form(...)],
     outage_datetime: Annotated[str, Form(...)],
-    outage_cause:Annotated[str, Form(...)],
+    outage_cause: Annotated[str, Form(...)],
     rectification: Annotated[str, Form(...)],
-    comments:Annotated[str, Form(...)],
+    comments: Annotated[str, Form(...)],
     images: List[UploadFile] = File(...),
 ):
 
